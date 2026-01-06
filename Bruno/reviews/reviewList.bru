@@ -1,0 +1,16 @@
+meta {
+  name: reviewList
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://127.0.0.1:8000/api/reviews
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

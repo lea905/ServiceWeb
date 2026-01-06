@@ -1,15 +1,16 @@
 meta {
-  name: estate
+  name: review
   type: http
   seq: 3
 }
 
 get {
-  url: https://127.0.0.1:8000/api/estates/{id}
+  url: https://127.0.0.1:8000/api/reviews/{id}
   body: none
   auth: inherit
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

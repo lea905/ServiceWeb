@@ -1,15 +1,16 @@
 meta {
-  name: estatesDelete
+  name: reviewsDelete
   type: http
-  seq: 4
+  seq: 2
 }
 
 delete {
-  url: https://127.0.0.1:8000/api/estates/{id}
+  url: https://127.0.0.1:8000/api/reviews/{id}
   body: none
   auth: inherit
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }
