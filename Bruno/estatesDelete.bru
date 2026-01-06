@@ -1,0 +1,15 @@
+meta {
+  name: estatesDelete
+  type: http
+  seq: 4
+}
+
+delete {
+  url: https://127.0.0.1:8000/api/estates/{id}
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
