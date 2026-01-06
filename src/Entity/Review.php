@@ -12,10 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
 #[ApiResource]
 #[ApiResource(
     uriTemplate: '/estates/{id}/reviews',
+    operations: [new GetCollection()],
     uriVariables: [
-        'id' => new Link(fromClass: Estate::class, fromProperty: 'reviews'),
-    ],
-    operations: [new GetCollection()]
+        'id' => new Link(fromProperty: 'reviews', fromClass: Estate::class),
+    ]
 )]
 class Review
 {
