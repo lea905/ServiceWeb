@@ -136,7 +136,7 @@
                 <span class="label">Prix</span>
                 <span class="value price" id="estate-price">--</span>
             </div>
-            <!-- Section pour les documents si présents -->
+
             <div id="docs-section" style="display:none; margin-top: 1rem;">
                 <span class="label">Documents</span>
                 <p class="value" id="estate-docs" style="font-size: 0.9rem; font-weight: normal;"></p>
@@ -152,7 +152,7 @@
         const errorDiv = document.getElementById('error');
         const loadingDiv = document.getElementById('loading');
 
-        // Éléments du DOM
+
         const elName = document.getElementById('estate-name');
         const elCity = document.getElementById('estate-city');
         const elState = document.getElementById('estate-state');
@@ -168,7 +168,6 @@
             button.disabled = true;
 
             try {
-                // Note: HTTPS est requis car le serveur force la redirection
                 const response = await fetch('https://localhost:8000/api/estates/1', {
                     method: 'GET',
                     headers: {
@@ -184,20 +183,19 @@
                 const data = await response.json();
                 console.log('Données reçues:', data);
 
-                // Mise à jour des champs (avec gestion des valeurs manquantes)
+
                 elName.textContent = data.name || 'Nom non disponible';
                 elCity.textContent = data.city || 'Non spécifié';
                 elState.textContent = data.state || 'Non spécifié';
 
-                // Formatage du prix
+
                 if (data.price) {
                     elPrice.textContent = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(data.price);
                 } else {
                     elPrice.textContent = 'Prix non communiqué';
                 }
 
-                // Gestion de documents.textContents (si présent)
-                // On vérifie plusieurs structures possibles au cas où
+
                 let docsText = '';
                 if (data.documents && Array.isArray(data.documents)) {
                     docsText = data.documents.map(d => d.textContents).join(', ');
@@ -212,7 +210,6 @@
                     elDocsSection.style.display = 'none';
                 }
 
-                // Affichage
                 resultCard.style.display = 'block';
 
             } catch (e) {
