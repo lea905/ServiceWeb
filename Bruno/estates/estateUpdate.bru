@@ -10,10 +10,57 @@ patch {
   auth: inherit
 }
 
+headers {
+  Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NzAwNDEzMTcsImV4cCI6MTc3MDA0NDkxNywicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.Kc6CV4Lv1FgCBYA5nlfT26iUD_KUD4epmD_mP72Y0ebihtKu5QMiRguqdSMuUZIYHnQxl2DyHlyDqmVBncHuzgAjgtXxPKM2pRR1yK_aZBd_fj7Q33ky9ywdUGIn0NQAJw8u4eXUSgUHTgyKmlJyLaI_R0-7N1YKeKhAcLVNBpevE1PTxSZhS-R7UUYpDwhW--Dzvl3LJeTtv82c2_8qshUweHriVFIMrGhiYyP3-SHl_FiybXKCaLLEl0-smMBwaerHIJ0i28_RZRerUq81F1FYmbIgBCPxigIv-Z06umIq1SQ2H_P4DAGnm40c6x6KJCquNMHwuxA5ngQmRiqSNQ
+}
+
 body:json {
   {
-    "name": "Immeuble"
+    "price": 300000,
+    "state": "Vente"
   }
+  
+}
+
+tests {
+  test("PATCH - Statut 200 OK", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("PATCH - Structure Estate correcte", function () {
+    const estate = res.getBody();
+    expect(estate).to.have.property("@context").that.equals("/api/contexts/Estate");
+    expect(estate).to.have.property("@id").that.equals("/api/estates/1");
+    expect(estate).to.have.property("@type").that.equals("Estate");
+  });
+  
+  
+  test("PATCH - Données mises à jour", function () {
+    const estate = res.getBody();
+    expect(estate.id).to.equal(1);
+    expect(estate.name).to.equal("Maison");  
+    expect(estate.price).to.equal(300000);   
+    expect(estate.state).to.equal("Vente");  
+    expect(estate.city).to.equal("Paris");   
+  });
+  
+  
+  test("PATCH - Champs préservés", function () {
+    const estate = res.getBody();
+    expect(estate.name).to.equal("Maison"); 
+    expect(estate.city).to.equal("Paris"); 
+  });
+  
+  
+  test("PATCH - Réponse rapide", function () {
+    expect(res.getResponseTime()).to.be.below(800);
+  });
+  
+  
+  test("PATCH - Relations préservées", function () {
+    const estate = res.getBody();
+    expect(estate.reviews).to.be.an("array");
+  });
   
 }
 

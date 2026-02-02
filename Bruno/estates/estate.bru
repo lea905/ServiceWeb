@@ -5,9 +5,54 @@ meta {
 }
 
 get {
-  url: https://127.0.0.1:8000/api/estates/{id}
+  url: https://127.0.0.1:8000/api/estates/1
   body: none
   auth: inherit
+}
+
+headers {
+  Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NzAwNDEzMTcsImV4cCI6MTc3MDA0NDkxNywicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.Kc6CV4Lv1FgCBYA5nlfT26iUD_KUD4epmD_mP72Y0ebihtKu5QMiRguqdSMuUZIYHnQxl2DyHlyDqmVBncHuzgAjgtXxPKM2pRR1yK_aZBd_fj7Q33ky9ywdUGIn0NQAJw8u4eXUSgUHTgyKmlJyLaI_R0-7N1YKeKhAcLVNBpevE1PTxSZhS-R7UUYpDwhW--Dzvl3LJeTtv82c2_8qshUweHriVFIMrGhiYyP3-SHl_FiybXKCaLLEl0-smMBwaerHIJ0i28_RZRerUq81F1FYmbIgBCPxigIv-Z06umIq1SQ2H_P4DAGnm40c6x6KJCquNMHwuxA5ngQmRiqSNQ
+}
+
+tests {
+  test("Statut doit être 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Content-Type application/ld+json", function () {
+    expect(res.getHeader("content-type")).to.contain("application/ld+json");
+  });
+  
+  test("Réponse rapide < 800ms", function () {
+    expect(res.getResponseTime()).to.be.below(800);
+  });
+  
+  test("Structure Estate ApiPlatform", function () {
+    const estate = res.getBody();
+    expect(estate).to.have.property("@context").that.equals("/api/contexts/Estate");
+    expect(estate).to.have.property("@id").that.equals("/api/estates/1");
+    expect(estate).to.have.property("@type").that.equals("Estate");
+  });
+  
+  test("Champs Estate complets", function () {
+    const estate = res.getBody();
+    expect(estate.id).to.equal(1);
+    expect(estate.name).to.equal("Maison");
+    expect(estate.city).to.equal("Paris");
+    expect(estate.price).to.equal(10000000000);
+    expect(estate.state).to.equal("Location");
+    expect(estate.reviews).to.be.an("array").with.lengthOf(1);
+    expect(estate.reviews[0]).to.equal("/api/reviews/1");
+  });
+  
+  test("Données Estate cohérentes", function () {
+    const estate = res.getBody();
+    expect(estate.price).to.be.a("number").and.above(0);
+    expect(estate.name).to.have.length.above(2);
+    expect(estate.city).to.match(/^[a-zA-ZÀ-ÿ\s\-]+$/);
+    expect(estate.state).to.be.oneOf(["Location", "Achat", "Vente"]);
+  });
+  
 }
 
 settings {

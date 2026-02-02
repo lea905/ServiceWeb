@@ -6,8 +6,63 @@ meta {
 
 post {
   url: https://127.0.0.1:8000/api/estates
-  body: none
+  body: json
   auth: inherit
+}
+
+headers {
+  Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NzAwNDEzMTcsImV4cCI6MTc3MDA0NDkxNywicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.Kc6CV4Lv1FgCBYA5nlfT26iUD_KUD4epmD_mP72Y0ebihtKu5QMiRguqdSMuUZIYHnQxl2DyHlyDqmVBncHuzgAjgtXxPKM2pRR1yK_aZBd_fj7Q33ky9ywdUGIn0NQAJw8u4eXUSgUHTgyKmlJyLaI_R0-7N1YKeKhAcLVNBpevE1PTxSZhS-R7UUYpDwhW--Dzvl3LJeTtv82c2_8qshUweHriVFIMrGhiYyP3-SHl_FiybXKCaLLEl0-smMBwaerHIJ0i28_RZRerUq81F1FYmbIgBCPxigIv-Z06umIq1SQ2H_P4DAGnm40c6x6KJCquNMHwuxA5ngQmRiqSNQ
+}
+
+body:json {
+  {
+    "name": "Appartement",
+    "city": "Lyon",
+    "price": 250000,
+    "state": "Achat"
+  }
+}
+
+tests {
+  test("Statut doit être 201 Created", function () {
+    expect(res.getStatus()).to.equal(201);
+  });
+  
+  test("Content-Type application/ld+json", function () {
+    expect(res.getHeader("content-type")).to.contain("application/ld+json");
+  });
+  
+  test("Header Location avec nouvel ID", function () {
+    const location = res.getHeader("location");
+    expect(location).to.exist.and.match(/\/api\/estates\/\d+$/);
+  });
+  
+  test("Structure Estate créé correcte", function () {
+    const estate = res.getBody();
+    expect(estate).to.have.property("@context").that.equals("/api/contexts/Estate");
+    expect(estate).to.have.property("@id").that.match(/\/api\/estates\/\d+$/);
+    expect(estate).to.have.property("@type").that.equals("Estate");
+    expect(estate.id).to.be.a("number").and.above(0);
+  });
+  
+  
+  test("Données saisies bien sauvegardées", function () {
+    const estate = res.getBody();
+    expect(estate.name).to.equal("Appartement");
+    expect(estate.city).to.equal("Lyon");
+    expect(estate.price).to.equal(250000);
+    expect(estate.state).to.equal("Achat");
+    expect(estate.reviews).to.be.an("array").that.is.empty;
+  });
+  
+  
+  test("Estate cohérent", function () {
+    const estate = res.getBody();
+    expect(estate.price).to.be.above(0);
+    expect(estate.name).to.have.length.above(2);
+    expect(estate.city).to.match(/^[a-zA-ZÀ-ÿ\s\-]+$/);
+  });
+  
 }
 
 settings {

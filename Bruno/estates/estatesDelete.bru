@@ -5,9 +5,40 @@ meta {
 }
 
 delete {
-  url: https://127.0.0.1:8000/api/estates/{id}
+  url: https://127.0.0.1:8000/api/estates/1
   body: none
   auth: inherit
+}
+
+headers {
+  Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3NzAwNDEzMTcsImV4cCI6MTc3MDA0NDkxNywicm9sZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfVVNFUiJdLCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.Kc6CV4Lv1FgCBYA5nlfT26iUD_KUD4epmD_mP72Y0ebihtKu5QMiRguqdSMuUZIYHnQxl2DyHlyDqmVBncHuzgAjgtXxPKM2pRR1yK_aZBd_fj7Q33ky9ywdUGIn0NQAJw8u4eXUSgUHTgyKmlJyLaI_R0-7N1YKeKhAcLVNBpevE1PTxSZhS-R7UUYpDwhW--Dzvl3LJeTtv82c2_8qshUweHriVFIMrGhiYyP3-SHl_FiybXKCaLLEl0-smMBwaerHIJ0i28_RZRerUq81F1FYmbIgBCPxigIv-Z06umIq1SQ2H_P4DAGnm40c6x6KJCquNMHwuxA5ngQmRiqSNQ
+}
+
+tests {
+  test("DELETE - Statut 204 No Content", function () {
+    expect(res.getStatus()).to.equal(204);
+  });
+  
+  
+  test("DELETE - Corps vide", function () {
+    expect(res.getBody()).to.be.empty;
+  });
+  
+  
+  test("DELETE - Content-Type correct", function () {
+    expect(res.getHeader("content-type")).to.contain("application/ld+json");
+  });
+  
+  test("DELETE - Réponse rapide", function () {
+    expect(res.getResponseTime()).to.be.below(500);
+  });
+  
+  
+  test("DELETE - Vérification métier", function () {
+    // Le 204 confirme la suppression
+    expect(res.getStatus()).to.equal(204);
+  });
+  
 }
 
 settings {

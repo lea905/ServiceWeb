@@ -3,13 +3,35 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
 use App\Repository\EstateRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EstateRepository::class)]
-#[ApiResource]
+#[ApiResource(operations: [
+    new Get(
+        cacheHeaders: ['etag' => true, 'public' => true, 'max_age' => 3600]
+    ),
+    new GetCollection(
+        cacheHeaders: ['etag' => true, 'public' => true, 'max_age' => 3600]
+    ),
+    new Post(
+        cacheHeaders: ['etag' => true, 'public' => true, 'max_age' => 3600]
+    ),
+    new Patch(
+        cacheHeaders: ['etag' => true, 'public' => true, 'max_age' => 3600]
+    ),
+    new Delete(
+        cacheHeaders: ['etag' => true, 'public' => true, 'max_age' => 3600]
+    )
+])]
+
 class Estate
 {
     #[ORM\Id]
@@ -34,6 +56,8 @@ class Estate
 
     #[ORM\Column(length: 255)]
     private ?string $state = null;
+
+
 
     public function __construct()
     {
